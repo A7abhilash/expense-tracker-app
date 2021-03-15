@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Alert, Button, StyleSheet, View } from "react-native";
 import AddBudgetInput from "./components/AddBudgetInput";
 import DisplayAmountDetails from "./components/DisplayAmountDetails";
 
@@ -10,6 +10,19 @@ export default function Home() {
   const [expense, setExpense] = useState(0);
   const [balance, setBalance] = useState(0);
 
+  const addBudget = (val) => {
+    const result = budget + val;
+    // console.log(result);
+    if (result < 0) {
+      Alert.alert("Invalid", "Invalid input, Budget can't be negative", [
+        { text: "OK" },
+      ]);
+      return;
+    }
+    setBudget(result);
+    setBalance((prev) => parseInt(prev) + parseInt(val));
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.button}></View>
@@ -17,7 +30,8 @@ export default function Home() {
       <AddBudgetInput
         visibleAddBudget={visibleAddBudget}
         setVisibleAddBudget={setVisibleAddBudget}
-        setBudget={setBudget}
+        addBudget={addBudget}
+        budget={budget}
       />
       <DisplayAmountDetails
         budget={budget}

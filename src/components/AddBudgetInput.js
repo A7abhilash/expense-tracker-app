@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Alert,
   Button,
   Keyboard,
   Modal,
@@ -13,7 +12,8 @@ import {
 export default function AddBudgetInput({
   visibleAddBudget,
   setVisibleAddBudget,
-  setBudget,
+  addBudget,
+  budget,
 }) {
   const [text, setText] = useState("");
 
@@ -24,17 +24,8 @@ export default function AddBudgetInput({
 
   const handleSubmit = () => {
     Keyboard.dismiss();
-    setBudget((prev) => {
-      const result = parseInt(prev) + parseInt(text);
-      if (result < 0) {
-        Alert.alert("Invalid", "Invalid input, Budget can't be negative", [
-          { text: "OK" },
-        ]);
-        return prev;
-      }
-      return result;
-    });
     closeModal();
+    addBudget(parseInt(text));
   };
 
   return (
