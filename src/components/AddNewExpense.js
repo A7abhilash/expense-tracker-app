@@ -28,7 +28,12 @@ export default function AddNewExpense({
     if (title !== "" && amount !== "" && amount != 0) {
       Keyboard.dismiss();
       closeModal();
-      addNewExpense({ title, amount: parseInt(amount) });
+      let item = {
+        title,
+        amount: parseInt(amount),
+        id: new Date().getTime().toString(),
+      };
+      addNewExpense(item);
     } else {
       Alert.alert("Invalid", "Invalid input", [{ text: "OK" }]);
     }

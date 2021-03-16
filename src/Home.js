@@ -3,6 +3,7 @@ import { Alert, Button, StyleSheet, View } from "react-native";
 import AddBudgetInput from "./components/AddBudgetInput";
 import AddNewExpense from "./components/AddNewExpense";
 import DisplayAmountDetails from "./components/DisplayAmountDetails";
+import ExpenseList from "./components/ExpenseList";
 
 export default function Home() {
   const [visibleAddBudget, setVisibleAddBudget] = useState(false);
@@ -30,7 +31,15 @@ export default function Home() {
     let { amount } = item;
     setBalance((prev) => parseInt(prev) - parseInt(amount));
     setExpense((prev) => parseInt(prev) + parseInt(amount));
-    setAllExpenses((prev) => [...prev, item]);
+    setAllExpenses((prev) => [item, ...prev]);
+  };
+
+  const deleteExpense = (item) => {
+    // console.log(item);
+    let { amount } = item;
+    setBalance((prev) => parseInt(prev) + parseInt(amount));
+    setExpense((prev) => parseInt(prev) - parseInt(amount));
+    setAllExpenses((prev) => prev.filter((i) => i.id !== item.id));
   };
 
   return (
@@ -61,6 +70,7 @@ export default function Home() {
           addNewExpense={addNewExpense}
         />
       )}
+      <ExpenseList allExpenses={allExpenses} deleteExpense={deleteExpense} />
     </View>
   );
 }
