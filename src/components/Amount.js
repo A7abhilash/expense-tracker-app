@@ -11,7 +11,7 @@ export default function Money({ title, amount }) {
   return (
     <View style={styles.container}>
       <Text style={{ ...styles.amount, color: setColorOfAmount() }}>
-        {amount}
+        {amount}₹
       </Text>
       <Text style={styles.title}>{title}</Text>
     </View>

@@ -48,7 +48,7 @@ export default function AddNewExpense({
         value={amount}
         onChangeText={(val) => setAmount(val)}
         keyboardType="numeric"
-        placeholder="Enter Amount"
+        placeholder="Enter Amount(₹)"
       />
       <View style={styles.buttons}>
         <View style={styles.button}>
