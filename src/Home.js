@@ -1,5 +1,13 @@
-import React, { useState } from "react";
-import { Alert, Button, StyleSheet, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  Alert,
+  Button,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  View,
+} from "react-native";
 import AddBudgetInput from "./components/AddBudgetInput";
 import AddNewExpense from "./components/AddNewExpense";
 import DisplayAmountDetails from "./components/DisplayAmountDetails";
@@ -13,6 +21,70 @@ export default function Home() {
   const [balance, setBalance] = useState(0);
   const [allExpenses, setAllExpenses] = useState([]);
 
+  const loadLocalStorage = async () => {
+    try {
+      const localStorageBudget = await AsyncStorage.getItem("budget");
+      console.log(localStorageBudget);
+      const localStorageExpense = await AsyncStorage.getItem("expense");
+      const localStorageBalance = await AsyncStorage.getItem("balance");
+      const localStorageExpenseList = await AsyncStorage.getItem("expenseList");
+
+      if (localStorageBudget === null) {
+        try {
+          await AsyncStorage.setItem("budget", "0");
+          await AsyncStorage.setItem("expense", "0");
+          await AsyncStorage.setItem("balance", "0");
+          await AsyncStorage.setItem("expenseList", []);
+        } catch (e) {
+          Alert.alert("Error", "Please close & open the app!!!", [
+            { text: "OK" },
+          ]);
+        }
+      } else {
+        setBudget(parseInt(localStorageBudget));
+        setExpense(parseInt(localStorageExpense));
+        setBalance(parseInt(localStorageBalance));
+        // setAllExpenses(localStorageExpenseList);
+        ToastAndroid.showWithGravityAndOffset(
+          "Data Loaded",
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
+          25,
+          50
+        );
+      }
+    } catch (error) {
+      Alert.alert("Error", "Coudnt load your data!!!", [{ text: "OK" }]);
+    }
+  };
+
+  const updateLocalStorage = async () => {
+    try {
+      await AsyncStorage.setItem("budget", budget.toString());
+      console.log(budget);
+      await AsyncStorage.setItem("expense", expense.toString());
+      await AsyncStorage.setItem("balance", balance.toString());
+      await AsyncStorage.setItem("expenseList", JSON.stringify(allExpenses));
+      ToastAndroid.showWithGravityAndOffset(
+        "Saved",
+        ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
+        25,
+        50
+      );
+    } catch (e) {
+      Alert.alert("Error", "Coudnt save the changes!!!", [{ text: "OK" }]);
+    }
+  };
+
+  useEffect(() => {
+    loadLocalStorage();
+  }, []);
+
+  useEffect(() => {
+    updateLocalStorage();
+  }, [budget, balance, expense]);
+
   const addBudget = (val) => {
     const result = budget + val;
     // console.log(result);
@@ -24,6 +96,7 @@ export default function Home() {
     }
     setBudget(result);
     setBalance((prev) => parseInt(prev) + parseInt(val));
+    // updateLocalStorage();
   };
 
   const addNewExpense = (item) => {
@@ -32,6 +105,7 @@ export default function Home() {
     setBalance((prev) => parseInt(prev) - parseInt(amount));
     setExpense((prev) => parseInt(prev) + parseInt(amount));
     setAllExpenses((prev) => [item, ...prev]);
+    // updateLocalStorage();
   };
 
   const deleteExpense = (item) => {
@@ -40,6 +114,7 @@ export default function Home() {
     setBalance((prev) => parseInt(prev) + parseInt(amount));
     setExpense((prev) => parseInt(prev) - parseInt(amount));
     setAllExpenses((prev) => prev.filter((i) => i.id !== item.id));
+    // updateLocalStorage();
   };
 
   return (

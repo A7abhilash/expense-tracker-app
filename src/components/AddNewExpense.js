@@ -25,7 +25,7 @@ export default function AddNewExpense({
   };
 
   const handleSubmit = () => {
-    if (title !== "" && amount !== "" && amount != 0) {
+    if (title !== "" && amount !== "" && amount > 0) {
       Keyboard.dismiss();
       closeModal();
       let item = {
