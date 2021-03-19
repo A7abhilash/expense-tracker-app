@@ -21,6 +21,16 @@ export default function Home() {
   const [balance, setBalance] = useState(0);
   const [allExpenses, setAllExpenses] = useState([]);
 
+  const showToastMessage = (msg) => {
+    ToastAndroid.showWithGravityAndOffset(
+      msg,
+      ToastAndroid.LONG,
+      ToastAndroid.BOTTOM,
+      25,
+      50
+    );
+  };
+
   const loadLocalStorage = async () => {
     try {
       const localStorageBudget = await AsyncStorage.getItem("budget");
@@ -34,24 +44,19 @@ export default function Home() {
           await AsyncStorage.setItem("budget", "0");
           await AsyncStorage.setItem("expense", "0");
           await AsyncStorage.setItem("balance", "0");
-          await AsyncStorage.setItem("expenseList", []);
         } catch (e) {
           Alert.alert("Error", "Please close & open the app!!!", [
             { text: "OK" },
           ]);
         }
+      } else if (localStorageExpenseList === null) {
+        await AsyncStorage.setItem("expenseList", []);
       } else {
         setBudget(parseInt(localStorageBudget));
         setExpense(parseInt(localStorageExpense));
         setBalance(parseInt(localStorageBalance));
-        // setAllExpenses(localStorageExpenseList);
-        ToastAndroid.showWithGravityAndOffset(
-          "Data Loaded",
-          ToastAndroid.LONG,
-          ToastAndroid.BOTTOM,
-          25,
-          50
-        );
+        setAllExpenses(JSON.parse(localStorageExpenseList));
+        showToastMessage("Data Loaded");
       }
     } catch (error) {
       Alert.alert("Error", "Coudnt load your data!!!", [{ text: "OK" }]);
@@ -65,13 +70,7 @@ export default function Home() {
       await AsyncStorage.setItem("expense", expense.toString());
       await AsyncStorage.setItem("balance", balance.toString());
       await AsyncStorage.setItem("expenseList", JSON.stringify(allExpenses));
-      ToastAndroid.showWithGravityAndOffset(
-        "Saved",
-        ToastAndroid.LONG,
-        ToastAndroid.BOTTOM,
-        25,
-        50
-      );
+      showToastMessage("Saved");
     } catch (e) {
       Alert.alert("Error", "Coudnt save the changes!!!", [{ text: "OK" }]);
     }
@@ -82,7 +81,9 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    updateLocalStorage();
+    if (budget || balance || expense) {
+      updateLocalStorage();
+    }
   }, [budget, balance, expense]);
 
   const addBudget = (val) => {
