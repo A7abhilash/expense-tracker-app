@@ -13,7 +13,6 @@ export default function AddBudgetInput({
   visibleAddBudget,
   setVisibleAddBudget,
   addBudget,
-  budget,
 }) {
   const [text, setText] = useState("");
 

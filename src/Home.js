@@ -32,10 +32,14 @@ export default function Home() {
     );
   };
 
+  const showAlertMessage = (title, msg) => {
+    Alert.alert(title, msg, [{ text: "OK" }]);
+  };
+
   const loadLocalStorage = async () => {
     try {
       const localStorageBudget = await AsyncStorage.getItem("budget");
-      console.log(localStorageBudget);
+      // console.log(localStorageBudget);
       const localStorageExpense = await AsyncStorage.getItem("expense");
       const localStorageBalance = await AsyncStorage.getItem("balance");
       const localStorageExpenseList = await AsyncStorage.getItem("expenseList");
@@ -46,9 +50,7 @@ export default function Home() {
           await AsyncStorage.setItem("expense", "0");
           await AsyncStorage.setItem("balance", "0");
         } catch (e) {
-          Alert.alert("Error", "Please close & open the app!!!", [
-            { text: "OK" },
-          ]);
+          showAlertMessage("Error", "Please close & open the app!!!");
         }
       } else if (localStorageExpenseList === null) {
         await AsyncStorage.setItem("expenseList", []);
@@ -60,7 +62,7 @@ export default function Home() {
         showToastMessage("Data Loaded");
       }
     } catch (error) {
-      Alert.alert("Error", "Coudnt load your data!!!", [{ text: "OK" }]);
+      showAlertMessage("Error", "Coudnt load your data!!!");
     }
   };
 
@@ -88,11 +90,13 @@ export default function Home() {
 
   const addBudget = (val) => {
     const result = budget + val;
-    // console.log(result);
+    // console.log(typeof val);
     if (result < 0) {
-      Alert.alert("Invalid", "Invalid input, Budget can't be negative", [
-        { text: "OK" },
-      ]);
+      showAlertMessage("Invalid", "Invalid input, Budget can't be negative");
+      return;
+    }
+    if (typeof val !== Number) {
+      showAlertMessage("Invalid", "Invalid input, Budget should be a number");
       return;
     }
     setBudget(result);
@@ -138,7 +142,7 @@ export default function Home() {
       <Button
         title="Add New Expense"
         onPress={() => setVisibleAddExpense(true)}
-        disabled={budget == 0}
+        // disabled={budget == 0}
       />
       {!visibleAddBudget && (
         <AddNewExpense
