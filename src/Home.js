@@ -14,6 +14,7 @@ import DisplayAmountDetails from "./components/DisplayAmountDetails";
 import ExpenseList from "./components/ExpenseList";
 
 export default function Home() {
+  const [loading, setLoading] = useState(true);
   const [visibleAddBudget, setVisibleAddBudget] = useState(false);
   const [visibleAddExpense, setVisibleAddExpense] = useState(false);
   const [budget, setBudget] = useState(0);
@@ -66,7 +67,7 @@ export default function Home() {
   const updateLocalStorage = async () => {
     try {
       await AsyncStorage.setItem("budget", budget.toString());
-      console.log(budget);
+      // console.log(budget);
       await AsyncStorage.setItem("expense", expense.toString());
       await AsyncStorage.setItem("balance", balance.toString());
       await AsyncStorage.setItem("expenseList", JSON.stringify(allExpenses));
@@ -77,14 +78,13 @@ export default function Home() {
   };
 
   useEffect(() => {
-    loadLocalStorage();
-  }, []);
+    setLoading(true);
+    loadLocalStorage().then(() => setLoading(false));
+  }, [setLoading]);
 
   useEffect(() => {
-    if (budget || balance || expense) {
-      updateLocalStorage();
-    }
-  }, [budget, balance, expense]);
+    updateLocalStorage();
+  }, [budget, balance, expense, allExpenses]);
 
   const addBudget = (val) => {
     const result = budget + val;
@@ -118,7 +118,7 @@ export default function Home() {
     // updateLocalStorage();
   };
 
-  return (
+  return !loading ? (
     <View style={styles.container}>
       <View style={styles.button}></View>
       <Button title="Add Budget" onPress={() => setVisibleAddBudget(true)} />
@@ -138,6 +138,7 @@ export default function Home() {
       <Button
         title="Add New Expense"
         onPress={() => setVisibleAddExpense(true)}
+        disabled={budget == 0}
       />
       {!visibleAddBudget && (
         <AddNewExpense
@@ -148,6 +149,8 @@ export default function Home() {
       )}
       <ExpenseList allExpenses={allExpenses} deleteExpense={deleteExpense} />
     </View>
+  ) : (
+    <Text style={styles.loadingText}>Loading...</Text>
   );
 }
 
@@ -158,5 +161,10 @@ const styles = StyleSheet.create({
   },
   button: {
     margin: 5,
+  },
+  loadingText: {
+    fontSize: 30,
+    textAlign: "center",
+    marginTop: 50,
   },
 });
