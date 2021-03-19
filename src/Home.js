@@ -89,14 +89,14 @@ export default function Home() {
   }, [budget, balance, expense, allExpenses]);
 
   const addBudget = (val) => {
-    const result = budget + val;
-    // console.log(typeof val);
-    if (result < 0) {
-      showAlertMessage("Invalid", "Invalid input, Budget can't be negative");
+    console.log(val);
+    if (isNaN(val)) {
+      showAlertMessage("Invalid", "Invalid input, Budget should be a number");
       return;
     }
-    if (typeof val !== Number) {
-      showAlertMessage("Invalid", "Invalid input, Budget should be a number");
+    const result = budget + val;
+    if (result < 0) {
+      showAlertMessage("Invalid", "Invalid input, Budget can't be negative");
       return;
     }
     setBudget(result);
