@@ -4,7 +4,7 @@ A simple mobile application which can be used to track your expenses and maintai
 
 ### Screenshots
 
-<div>
+<div align="center">
 <h6>
 #1 #4 #5 #6 #7 Home Screen | #2 Add Budget | #3 Add Expense
 </h6>
@@ -20,5 +20,4 @@ A simple mobile application which can be used to track your expenses and maintai
 <img src="assets/screenshots/Screenshot_1619061576.png" style="border-radius:5px;" alt="Home" height="200">
 </div>
 
-> > [Web Preview](https://a7expensetracker.netlify.app/)
-> > [Web Repo](https://github.com/A7abhilash/expense-tracker)
+> > [Web Preview](https://a7expensetracker.netlify.app/) > > [Web Repo](https://github.com/A7abhilash/expense-tracker)
